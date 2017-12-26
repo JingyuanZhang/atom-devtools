@@ -16,13 +16,6 @@
       <i class="material-icons">device_hub</i>
       <span class="pane-name">Components</span>
     </a>
-    <a class="button vuex"
-      :class="{ active: tab === 'vuex'}"
-      @click="switchTab('vuex')"
-      title="Switch to Vuex">
-      <i class="material-icons">restore</i>
-      <span class="pane-name">Vuex</span>
-    </a>
     <a class="button events"
       :class="{ active: tab === 'events' }"
       @click="switchTab('events')"
@@ -31,18 +24,18 @@
       <span class="pane-name">Events</span>
       <span class="event-count" v-if="newEventCount > 0">{{ newEventCount }}</span>
     </a>
-    <a class="button refresh"
-      @click="refresh"
-      title="Force Refresh">
-      <i class="material-icons" ref="refresh">refresh</i>
-      <span class="pane-name">Refresh</span>
-    </a>
     <a class="button log"
     :class="{ active: tab === 'log' }"
       @click="switchTab('log')"
       title="check log">
       <i class="material-icons" >message</i>
       <span class="pane-name">log</span>
+    </a>
+    <a class="button refresh"
+      @click="refresh"
+      title="Force Refresh">
+      <i class="material-icons" ref="refresh">refresh</i>
+      <span class="pane-name">Refresh</span>
     </a>
     <span class="active-bar"></span>
   </div>
@@ -53,7 +46,6 @@
 <script>
 import ComponentsTab from './views/components/ComponentsTab.vue'
 import EventsTab from './views/events/EventsTab.vue'
-import VuexTab from './views/vuex/VuexTab.vue'
 import LogTab from './views/log/LogTab.vue'
 
 import { mapState } from 'vuex'
@@ -69,7 +61,6 @@ export default {
   },
   components: {
     components: ComponentsTab,
-    vuex: VuexTab,
     events: EventsTab,
     log: LogTab
   },
