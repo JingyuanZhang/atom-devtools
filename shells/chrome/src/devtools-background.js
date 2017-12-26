@@ -23,7 +23,7 @@ function createPanelIfHasVue () {
       clearInterval(checkVueInterval)
       created = true
       chrome.devtools.panels.create(
-        'Vue', 'icons/128.png', 'devtools.html',
+        'Atom', 'icons/128.png', 'devtools.html',
         function (panel) {
           // panel loaded
         }
