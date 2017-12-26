@@ -14,7 +14,7 @@
 #### 1. 增加页面交互时，整体组件变化diff detail提示
 
 ### 使用方法
-#### 下载项目，安装依赖npm install, 运行 npm run build，把shells/chrome添加到chrome扩展里即可，如下
+#### 下载项目，安装依赖npm install，运行 npm run build，把shells/chrome添加到chrome扩展里即可，如下
 1. 在chrome下输入url：chrome://extensions/
 2. 点击按钮「加载已解压的扩展程序」
 3. 选择shells文件下的chrome文件即可
