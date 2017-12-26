@@ -96,7 +96,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 }, {
         //配置拦截匹配的url，数组里域名下的资源都将被拦截
         urls: [
-            "*://m.baidu.com/se/static/js/dep/atom.min_373895d.js"
+            "*://*.baidu.com/*/js/dep/atom.min_*.js"
         ],
         //拦截的资源类型，在这里只拦截script脚本，也可以拦截image等其他静态资源
         types: ["script"]
