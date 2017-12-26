@@ -15,8 +15,7 @@ module.exports = {
     'devtools-background': './src/devtools-background.js',
     backend: './src/backend.js',
     proxy: './src/proxy.js',
-    detector: './src/detector.js',
-    'vue.runtime.esm': './src/vue.runtime.esm.js'
+    detector: './src/detector.js'
   },
   output: {
     path: path.join(__dirname, 'build'),

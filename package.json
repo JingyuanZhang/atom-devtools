@@ -8,7 +8,7 @@
     "dev:chrome": "cd shells/chrome && webpack --watch --hide-modules",
     "dev:safari": "cd shells/safari && webpack --watch --hide-modules",
     "lint": "eslint src --ext=js,vue && eslint shells/chrome/src && eslint shells/dev/src && eslint shells/safari/src",
-    "build": "cd shells/chrome && cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "build": "rimraf build && cd shells/chrome && cross-env NODE_ENV=production webpack --progress --hide-modules && cp -R ./src/atom.js ./build",
     "build:safari": "cd shells/safari && NODE_ENV=production webpack --progress --hide-modules -p",
     "run:firefox": "web-ext run -s shells/chrome -a dist -i src",
     "zip": "npm run zip:chrome && npm run zip:firefox",
