@@ -2,7 +2,11 @@
     <div v-if="imgHTTPEles.length > 0">
         <p>img src http:</p>
         <div v-for="item in imgHTTPEles" >
-            <span>{{item}}</span>
+            <span style="color:#3ba776"
+                @mouseenter="enter(item)"
+                @mouseleave="leave(item)">
+                {{item.html}}
+            </span>
         </div>
     </div>
 </template>
@@ -16,11 +20,13 @@ export default {
     methods: {
         filter (e) {
             bridge.send('filter-instances', e.target.value)
+        },
+        enter (item) {
+          bridge.send('enter-img-node', item.index)
+        },
+        leave (item) {
+          bridge.send('leave-img-node', item.index)
         }
-    },
-    mounted() {
-
-
     }
 }
 </script>

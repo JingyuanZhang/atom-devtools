@@ -1,7 +1,7 @@
 // This is the backend that is injected into the page that a Vue app lives in
 // when the Vue Devtools panel is activated.
 
-import { highlight, unHighlight, getInstanceRect } from './highlighter'
+import { highlight, nodeHighlight, unHighlight, unImgHighlight, getInstanceRect } from './highlighter'
 import { initVuexBackend } from './vuex'
 import { initEventsBackend } from './events'
 import { stringify, classify, camelize } from '../util'
@@ -36,6 +36,8 @@ let vueInstanceInfoOrigin = {};
 let vueInstanceArrOrigin = [];
 let vueInstanceInfoUpdated = {};
 let vueInstanceArrUpdated = [];
+let imgHttpMap = new Map();
+let imgHttpMapIndex = 0;
 
 export function initBackend (_bridge) {
 
@@ -106,6 +108,9 @@ function connect () {
       // console.log(vueInstanceInfoOrigin);
       // console.log(vueInstanceInfoUpdated);
   });
+
+    bridge.on('enter-img-node', index => nodeHighlight(imgHttpMap.get(`imgNode${index}`)));
+    bridge.on('leave-img-node', unImgHighlight)
   // vuex
   if (hook.store) {
     initVuexBackend(hook, bridge)
@@ -132,48 +137,50 @@ initEventsBackend(hook.Vue, bridge)
  * Scan the page for root level Vue instances.
  */
 
-function scan () {
-  rootInstances.length = 0
-  let inFragment = false
-  let currentFragment = null
-  imgSrcError.length = 0; // refresh时清空数组
-  checkSrc(document);
-  // vueInstanceInfoOrigin = getVueInstance(document);
-  walk(document, function (node) {
-    if (inFragment) {
-      if (node === currentFragment._fragmentEnd) {
-        inFragment = false
-        currentFragment = null
-      }
-      return true
-    }
-
-    const instance = node.__vue__
-    if (instance) { // 当前demo都没有 _isFragment该属性
-      if (instance._isFragment) {
-        inFragment = true
-        currentFragment = instance
-      }
-
-      // respect Vue.config.devtools option
-      let baseVue = instance.constructor
-      while (baseVue.super) {
-        baseVue = baseVue.super
-      }
-
-      if (baseVue.config && baseVue.config.devtools) {
-        // give a unique id to root instance so we can
-        // 'namespace' its children
-        if (typeof instance.__VUE_DEVTOOLS_ROOT_UID__ === 'undefined') {
-          instance.__VUE_DEVTOOLS_ROOT_UID__ = ++rootUID
+function scan() {
+    rootInstances.length = 0;
+    let inFragment = false;
+    let currentFragment = null;
+    imgSrcError.length = 0; // refresh时清空数组
+    imgHttpMapIndex = 0;
+    imgHttpMap = new Map();
+    checkSrc(document);
+    // vueInstanceInfoOrigin = getVueInstance(document);
+    walk(document, function (node) {
+        if (inFragment) {
+            if (node === currentFragment._fragmentEnd) {
+                inFragment = false;
+                currentFragment = null;
+            }
+            return true;
         }
-        rootInstances.push(instance)
-      }
 
-      return true
-    }
-  })
-  flush()
+        const instance = node.__vue__;
+        if (instance) { // 当前demo都没有 _isFragment该属性
+            if (instance._isFragment) {
+                inFragment = true;
+                currentFragment = instance;
+            }
+            console.log(node.childNodes)
+            // respect Vue.config.devtools option
+            let baseVue = instance.constructor;
+            while (baseVue.super) {
+                baseVue = baseVue.super;
+            }
+
+            if (baseVue.config && baseVue.config.devtools) {
+                // give a unique id to root instance so we can
+                // 'namespace' its children
+                if (typeof instance.__VUE_DEVTOOLS_ROOT_UID__ === 'undefined') {
+                    instance.__VUE_DEVTOOLS_ROOT_UID__ = ++rootUID;
+                }
+                rootInstances.push(instance);
+            }
+
+            return true;
+        }
+    });
+    flush();
 }
 
 /**
@@ -286,6 +293,7 @@ function getVueInstance(node) {
  * 检查img node的src是否为https
  *
  * @param {Node} node 节点
+ * @return
  */
 function checkSrc(node) {
     if (window.location.href.toLowerCase().indexOf('https') > 0) {
@@ -296,7 +304,13 @@ function checkSrc(node) {
                 if (child.tagName === 'IMG') {
 
                     if (child.src.indexOf('https') === -1) {
-                        imgSrcError.push(child.outerHTML);
+                        // nodeHighlight(child);
+                        imgHttpMap.set(`imgNode${imgHttpMapIndex}`, child);
+                        imgSrcError.push({
+                            html: child.outerHTML,
+                            index: imgHttpMapIndex
+                        });
+                        imgHttpMapIndex++;
                     }
                 }
                 checkSrc(child);
@@ -307,6 +321,7 @@ function checkSrc(node) {
     }
 
 }
+
 /**
  * Called on every Vue.js batcher flush cycle.
  * Capture current component tree structure and the state

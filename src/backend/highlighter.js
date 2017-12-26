@@ -6,6 +6,12 @@ overlay.style.position = 'fixed'
 overlay.style.zIndex = '99999999999999'
 overlay.style.pointerEvents = 'none'
 
+const imgHTTPObj = document.createElement('div');
+imgHTTPObj.style.backgroundColor = 'rgba(255, 0, 0, 0.35)'
+imgHTTPObj.style.position = 'fixed'
+imgHTTPObj.style.zIndex = '999999999999991'
+imgHTTPObj.style.pointerEvents = 'none'
+
 /**
  * Highlight an instance.
  *
@@ -17,6 +23,57 @@ export function highlight (instance) {
   const rect = getInstanceRect(instance)
   if (rect) {
     showOverlay(rect)
+  }
+}
+
+/**
+ * Highlight an node.
+ *
+ * @param {Node} node dom节点
+ */
+export function nodeHighlight(node) {
+    if (!node) {
+        return;
+    }
+    const rect = getNodeRect(node);
+    if (rect) {
+        showImgHTTPObj(rect);
+    }
+}
+/**
+ * Get the client rect for a node.
+ *
+ * @param {Node} node
+ * @return {Object}
+ */
+
+export function getNodeRect(node) {
+    if (node.nodeType === 1) {
+        return node.getBoundingClientRect();
+    }
+}
+
+/**
+ * Display the overlay with given rect.
+ *
+ * @param {Rect}
+ */
+
+function showImgHTTPObj ({ width = 0, height = 0, top = 0, left = 0 }) {
+  imgHTTPObj.style.width = ~~width + 'px'
+  imgHTTPObj.style.height = ~~height + 'px'
+  imgHTTPObj.style.top = ~~top + 'px'
+  imgHTTPObj.style.left = ~~left + 'px'
+  document.body.appendChild(imgHTTPObj)
+}
+
+/**
+ * Remove highlight imgHTTPObj.
+ */
+
+export function unImgHighlight () {
+  if (imgHTTPObj.parentNode) {
+    document.body.removeChild(imgHTTPObj);
   }
 }
 
