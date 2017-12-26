@@ -91,7 +91,6 @@ chrome.runtime.onMessage.addListener((req, sender) => {
   }
 })
 
-
 chrome.webRequest.onBeforeRequest.addListener(details => {
     return {redirectUrl: chrome.extension.getURL("build/atom.js")};
 }, {
