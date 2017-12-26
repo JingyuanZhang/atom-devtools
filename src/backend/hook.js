@@ -52,8 +52,8 @@ export function installHook (window) {
     },
 
     emit (event) {
-      event = '$' + event
-      let cbs = listeners[event]
+      event = '$' + event;
+      let cbs = listeners[event];
       if (cbs) {
         const args = [].slice.call(arguments, 1)
         cbs = cbs.slice()
@@ -71,6 +71,10 @@ export function installHook (window) {
   hook.once('vuex:init', store => {
     hook.store = store
   })
+
+  window.onload = function () {
+      hook.emit('refresh');
+  }
 
   Object.defineProperty(window, '__VUE_DEVTOOLS_GLOBAL_HOOK__', {
     get () {

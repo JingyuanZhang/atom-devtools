@@ -38,6 +38,7 @@ let vueInstanceInfoUpdated = {};
 let vueInstanceArrUpdated = [];
 
 export function initBackend (_bridge) {
+
   bridge = _bridge
   if (hook.Vue) {
     isLegacy = hook.Vue.version && hook.Vue.version.split('.')[0] === '1'
@@ -64,6 +65,12 @@ function connect () {
     // if (hook.currentTab === 'components') { // 去掉 在 componenttab下触发的限制
       flush()
     // }
+  })
+
+  hook.on('refresh', () => {
+      console.log('page onload');
+      scan();
+
   })
 
   bridge.on('select-instance', id => {
